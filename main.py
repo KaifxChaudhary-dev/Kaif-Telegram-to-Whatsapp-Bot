@@ -127,16 +127,19 @@ class WhatsAppController:
         """Start Chrome driver"""
         try:
             options = Options()
+            options.add_argument('--headless=new')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--disable-gpu')
+            options.add_argument('--remote-debugging-port=9222')
             options.add_argument('--window-size=1920,1080')
             options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
             
             # Heroku check
             if 'DYNO' in os.environ:
                 options.binary_location = os.environ.get('GOOGLE_CHROME_BIN', '/app/.apt/usr/bin/google-chrome')
-                service = Service(executable_path=os.environ.get('CHROMEDRIVER_PATH', '/app/.chromedriver/bin/chromedriver'))
+                chromedriver_path = os.environ.get('CHROMEDRIVER_PATH', '/app/.chromedriver/bin/chromedriver')
+                service = Service(executable_path=chromedriver_path)
             else:
                 service = Service(ChromeDriverManager().install())
             
