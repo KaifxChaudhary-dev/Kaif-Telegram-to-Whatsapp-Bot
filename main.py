@@ -137,9 +137,27 @@ class WhatsAppController:
             
             # Heroku check
             if 'DYNO' in os.environ:
-                options.binary_location = os.environ.get('GOOGLE_CHROME_BIN', '/app/.apt/usr/bin/google-chrome')
+                chrome_bin = os.environ.get('GOOGLE_CHROME_BIN', '/app/.apt/opt/google/chrome/chrome')
+                if os.path.exists(chrome_bin):
+                    options.binary_location = chrome_bin
+                
                 chromedriver_path = os.environ.get('CHROMEDRIVER_PATH', '/app/.chromedriver/bin/chromedriver')
-                service = Service(executable_path=chromedriver_path)
+                if os.path.exists(chromedriver_path):
+                    try:
+                        service = Service(executable_path=chromedriver_path)
+                        self.driver = webdriver.Chrome(service=service, options=options)
+                        return True
+                    except Exception as err:
+                        print(f"⚠️ Default Heroku ChromeDriver failed ({err}), matching exact browser version...")
+
+                # Auto-detect exact installed Chrome version
+                try:
+                    import subprocess
+                    out = subprocess.check_output([options.binary_location, '--version']).decode('utf-8')
+                    version = out.strip().split()[-1].split('.')[0]
+                    service = Service(ChromeDriverManager(driver_version=version).install())
+                except Exception:
+                    service = Service(ChromeDriverManager().install())
             else:
                 service = Service(ChromeDriverManager().install())
             
