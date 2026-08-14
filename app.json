@@ -1,0 +1,52 @@
+{
+  "name": "Telegram-WhatsApp Bridge Bot",
+  "description": "Bridge bot to forward messages from Telegram to WhatsApp",
+  "repository": "https://github.com/mrwasif-dev/whatsapp-telegram-bridge",
+  "keywords": ["python", "telegram", "whatsapp", "bot", "bridge", "selenium"],
+  "env": {
+    "MONGODB_URI": {
+      "description": "MongoDB connection URI (Get from MongoDB Atlas - mongodb+srv://username:password@cluster.mongodb.net/dbname)",
+      "required": true
+    },
+    "TELEGRAM_API_ID": {
+      "description": "Telegram API ID (default 6 for standard Telegram Desktop)",
+      "value": "6",
+      "required": false
+    },
+    "TELEGRAM_API_HASH": {
+      "description": "Telegram API Hash (default eb066057c0321c1533836873b37168ad)",
+      "value": "eb066057c0321c1533836873b37168ad",
+      "required": false
+    },
+    "TELEGRAM_PHONE": {
+      "description": "Your Telegram Phone Number with country code (e.g. +923001234567)",
+      "required": false
+    },
+    "DEFAULT_TARGET": {
+      "description": "Default WhatsApp target number or Group Name (e.g. 923001234567 or Work Group)",
+      "required": false
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-google-chrome"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-chromedriver"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    },
+    "worker": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "stack": "heroku-22"
+}
